@@ -13,7 +13,8 @@ public class Main {
         String[] instructions = inputFile.replaceAll("[\\r\\n]", "").split(", ");
 
         DistanceCalculator distanceCalculator = new DistanceCalculator(instructions);
-        distanceCalculator.calculateDistance();
+        System.out.println("Shortest path is " + distanceCalculator.calculateDistance());
+
     }
 
 }

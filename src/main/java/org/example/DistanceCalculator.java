@@ -21,7 +21,7 @@ public class DistanceCalculator {
         this.y = 0;
     }
 
-    public void calculateDistance() {
+    public int calculateDistance() {
         String currentDegree = NORTH;  //start degree
         for (var instruction : instructions) {
             char direction = instruction.charAt(0);
@@ -30,7 +30,17 @@ public class DistanceCalculator {
             currentDegree = changeDegree(currentDegree, direction);
             updateCoordinates(currentDegree, quantity);
         }
-        printResult();
+        return getDistance();
+    }
+
+    public Integer getVisitedTwiceLocation() {
+        if (visitedTwice != null) {
+            String[] parts = visitedTwice.split(",");
+            int visitedX = Integer.parseInt(parts[0]);
+            int visitedY = Integer.parseInt(parts[1]);
+            return Math.abs(visitedX) + Math.abs(visitedY);
+        }
+        return null;
     }
 
     private void updateCoordinates(String degree, int quantity) {
@@ -81,16 +91,7 @@ public class DistanceCalculator {
         };
     }
 
-    private void printResult() {
-        int result = Math.abs(x) + Math.abs(y);
-        System.out.println("Shortest path to [" + x + "," + y + "] is " + result);
-
-        if (visitedTwice != null) {
-            String[] parts = visitedTwice.split(",");
-            int visitedX = Integer.parseInt(parts[0]);
-            int visitedY = Integer.parseInt(parts[1]);
-            int visitedDistance = Math.abs(visitedX) + Math.abs(visitedY);
-            System.out.println("First location visited twice is [" + visitedX + "," + visitedY + "], distance is " + visitedDistance);
-        }
+    private int getDistance() {
+        return Math.abs(x) + Math.abs(y);
     }
 }
