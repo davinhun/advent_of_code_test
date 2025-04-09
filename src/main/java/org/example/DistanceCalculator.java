@@ -9,16 +9,16 @@ public class DistanceCalculator {
     private static final String WEST = "West";
     private static final String SOUTH = "South";
 
-    private int x, y;
     private final String[] instructions;
     private final Set<String> visitedLocations;
     private String visitedTwice;
+    private int x, y;
 
     DistanceCalculator(String[] instructions) {
         this.instructions = instructions;
+        this.visitedLocations = new HashSet<>();
         this.x = 0;
         this.y = 0;
-        visitedLocations = new HashSet<>();
     }
 
     public void calculateDistance() {
@@ -35,32 +35,31 @@ public class DistanceCalculator {
 
     private void updateCoordinates(String degree, int quantity) {
         switch (degree) {
-            case NORTH:
+            case NORTH -> {
                 for (int i = 0; i < quantity; i++) {
                     y++;
                     updateVisitedLocations();
                 }
-                break;
-            case SOUTH:
+            }
+            case SOUTH -> {
                 for (int i = 0; i < quantity; i++) {
                     y--;
                     updateVisitedLocations();
                 }
-                break;
-            case EAST:
+            }
+            case EAST -> {
                 for (int i = 0; i < quantity; i++) {
                     x++;
                     updateVisitedLocations();
                 }
-                break;
-            case WEST:
+            }
+            case WEST -> {
                 for (int i = 0; i < quantity; i++) {
                     x--;
                     updateVisitedLocations();
                 }
-                break;
-            default:
-                throw new IllegalArgumentException("Invalid degree: " + degree);
+            }
+            default -> throw new IllegalArgumentException("Invalid degree: " + degree);
         }
     }
 
@@ -84,14 +83,14 @@ public class DistanceCalculator {
 
     private void printResult() {
         int result = Math.abs(x) + Math.abs(y);
-        System.out.println("Shortest path from (0,0) to (" + x + "," + y + ") is " + result);
+        System.out.println("Shortest path to [" + x + "," + y + "] is " + result);
 
         if (visitedTwice != null) {
             String[] parts = visitedTwice.split(",");
             int visitedX = Integer.parseInt(parts[0]);
             int visitedY = Integer.parseInt(parts[1]);
             int visitedDistance = Math.abs(visitedX) + Math.abs(visitedY);
-            System.out.println("First location visited twice is (" + visitedX + "," + visitedY + "), distance=" + visitedDistance);
+            System.out.println("First location visited twice is [" + visitedX + "," + visitedY + "], distance is " + visitedDistance);
         }
     }
 }
