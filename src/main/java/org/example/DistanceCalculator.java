@@ -1,5 +1,8 @@
 package org.example;
 
+import java.util.HashSet;
+import java.util.Set;
+
 public class DistanceCalculator {
     private static final String NORTH = "North";
     private static final String EAST = "East";
@@ -8,11 +11,14 @@ public class DistanceCalculator {
 
     private int x, y;
     private final String[] instructions;
+    private final Set<String> visitedLocations;
+    private String visitedTwice;
 
     DistanceCalculator(String[] instructions) {
         this.instructions = instructions;
         this.x = 0;
         this.y = 0;
+        visitedLocations = new HashSet<>();
     }
 
     public void calculateDistance() {
@@ -21,25 +27,49 @@ public class DistanceCalculator {
             char direction = instruction.charAt(0);
             int quantity = Integer.parseInt(instruction.substring(1));
 
-
             currentDegree = changeDegree(currentDegree, direction);
             updateCoordinates(currentDegree, quantity);
         }
         printResult();
     }
 
-    private void printResult() {
-        int result = Math.abs(x) + Math.abs(y);
-        System.out.println("Shortest path from (0,0) to (" + x + "," + y + ") is " + result);
+    private void updateCoordinates(String degree, int quantity) {
+        switch (degree) {
+            case NORTH:
+                for (int i = 0; i < quantity; i++) {
+                    y++;
+                    updateVisitedLocations();
+                }
+                break;
+            case SOUTH:
+                for (int i = 0; i < quantity; i++) {
+                    y--;
+                    updateVisitedLocations();
+                }
+                break;
+            case EAST:
+                for (int i = 0; i < quantity; i++) {
+                    x++;
+                    updateVisitedLocations();
+                }
+                break;
+            case WEST:
+                for (int i = 0; i < quantity; i++) {
+                    x--;
+                    updateVisitedLocations();
+                }
+                break;
+            default:
+                throw new IllegalArgumentException("Invalid degree: " + degree);
+        }
     }
 
-    private void updateCoordinates(String currentDegree, int quantity) {
-        switch (currentDegree) {
-            case NORTH -> y = y + quantity;
-            case SOUTH -> y = y - quantity;
-            case EAST -> x = x + quantity;
-            case WEST -> x = x - quantity;
+    private void updateVisitedLocations() {
+        String location = x + "," + y;
+        if (visitedLocations.contains(location) && visitedTwice == null) {
+            visitedTwice = location;
         }
+        visitedLocations.add(location);
     }
 
     private String changeDegree(String degree, char turn) {
@@ -50,5 +80,18 @@ public class DistanceCalculator {
             case WEST -> turn == 'L' ? SOUTH : NORTH;
             default -> throw new IllegalArgumentException("Invalid degree: " + degree);
         };
+    }
+
+    private void printResult() {
+        int result = Math.abs(x) + Math.abs(y);
+        System.out.println("Shortest path from (0,0) to (" + x + "," + y + ") is " + result);
+
+        if (visitedTwice != null) {
+            String[] parts = visitedTwice.split(",");
+            int visitedX = Integer.parseInt(parts[0]);
+            int visitedY = Integer.parseInt(parts[1]);
+            int visitedDistance = Math.abs(visitedX) + Math.abs(visitedY);
+            System.out.println("First location visited twice is (" + visitedX + "," + visitedY + "), distance=" + visitedDistance);
+        }
     }
 }
